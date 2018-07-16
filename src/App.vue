@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="container-fluid">
+  <div id="app">
     <div class="row">
       <div class="col-md-4">
         <span></span>
@@ -10,7 +10,7 @@
     </div>
     <div class="row">
       <div class="col-md-4">
-        <div class="card w-50 h-50 text-center" id="productView">
+        <div class="card w-50 h-50 text-center mx-auto" id="productView">
           <!--<img class="card-img-top" src="" alt="Card image cap">-->
           <span>img</span>
           <div class="card-body">
@@ -29,7 +29,7 @@
         </div>
       </div>
       <div class="col-md-8">
-        <div class="card w-75 h-75" id="cardInfo">
+        <div class="card w-100 h-100" id="cardInfo">
           <form  class="card-body">
             <h3 class="card-title">Credit Card</h3>
             <div class="form-group">
@@ -46,6 +46,9 @@
                 </div>
                 <div class="col-md-1">
                   <input type="text" maxlength="4" class="form-control text-center" placeholder="0000">
+                </div>
+                <div class="col-md-1">
+                  <span>visa/master img</span>
                 </div>
               </div>
             </div>
@@ -90,7 +93,6 @@
                 </div>
               </div>
             </div>
-
             <div class="row text-center form-group">
               <div class="col-md-4">
                 <button type="button" class="btn btn-light">Pay With Order</button>
@@ -103,7 +105,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -114,30 +115,23 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
+  },
+  computed: {
+
   }
 }
 </script>
 
 <style scoped lang="scss">
   $cardInfoLetter: black;
-
-
-/*<!--#app {-->*/
-  /*<!--font-family: 'Avenir', Helvetica, Arial, sans-serif;-->*/
-  /*<!-- -webkit-font-smoothing: antialiased;-->*/
-  /*<!-- -moz-osx-font-smoothing: grayscale;-->*/
-  /*<!--text-align: center;-->*/
-  /*<!--color: $cor;-->*/
-  /*<!--margin-top: 60px;-->*/
-/*<!--}-->*/
+  $backgroundColor: #F6F6F6;
 
 #app {
-  background-color: blue;
-  height: 10%;
+  background-color: $backgroundColor;
 }
 
 #productView {
-  background-color: blue;
+  background-color: $backgroundColor;
   border: 0px;
 }
 
@@ -148,7 +142,7 @@ export default {
   /*text-align: center;*/
   color: $cardInfoLetter;
   /*width: 80rem;*/
-  height: 30rem;
+  /*height: 30rem;*/
   /*margin-top: 60px;*/
 }
 
