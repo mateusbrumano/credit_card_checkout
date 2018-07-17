@@ -36,27 +36,47 @@
               <label for="cardNumber">Card Number</label>
               <div class="row" id="cardNumber">
                 <div class="col-md-1">
-                  <input type="text" maxlength="4" class="form-control text-center" placeholder="0000" name="cardNumber1" id="cardNumber1" @change="checkCard()" v-model="cardNumber1">
+                  <input type="text" maxlength="4" class="form-control text-center" placeholder="0000" name="cardNumber1" id="cardNumber1" v-focus v-model="cardNumber1" @change="checkCard()" @keypress="isNumber(cardNumber1)">
                 </div>
                 <div class="col-md-1">
-                  <input type="text" maxlength="4" class="form-control text-center" placeholder="0000" name="cardNumber2" id="cardNumber2" @change="checkCard()" v-model="cardNumber2">
+                  <input type="text" maxlength="4" class="form-control text-center" placeholder="0000" name="cardNumber2" id="cardNumber2" v-model="cardNumber2" @change="checkCard()" @keypress="isNumber(cardNumber2)">
                 </div>
                 <div class="col-md-1">
-                  <input type="text" maxlength="4" class="form-control text-center" placeholder="0000" name="cardNumber3" id="cardNumber3" @change="checkCard()" v-model="cardNumber3">
+                  <input type="text" maxlength="4" class="form-control text-center" placeholder="0000" name="cardNumber3" id="cardNumber3" v-model="cardNumber3" @change="checkCard()" @keypress="isNumber(cardNumber3)">
                 </div>
                 <div class="col-md-1">
-                  <input type="text" maxlength="4" class="form-control text-center" placeholder="0000" name="cardNumber4" id="cardNumber4" @change="checkCard()" v-model="cardNumber4">
+                  <input type="text" maxlength="5" class="form-control text-center" placeholder="0000" name="cardNumber4" id="cardNumber4" v-model="cardNumber4" @change="checkCard()" @keypress="isNumber(cardNumber4)">
                 </div>
                 <div class="col-md-1">
                   <img v-bind:src="cardSimbol.url" v-bind:alt="cardSimbol.title">
                 </div>
               </div>
+              <div id="invalidCard" class="row" v-if="!invalidCardMessage">
+                <div class="col-md-12">
+                  <small>Sorry, that is not a valid credit card number - please try again!</small>
+                </div>
+              </div>
+              <div id="validCard" class="row" v-if="validCardMessage">
+                <div class="col-md-12">
+                  <small>Valid Credit Card!</small>
+                </div>
+              </div>
             </div>
             <div class="form-group">
               <label for="cardHolder">Card Holder</label>
-              <div class="row" id="cardHolder">
-                <div class="col-md-8">
-                  <input type="text" class="form-control" aria-describedby="cardHolder" placeholder="Send your name">
+              <div class="row">
+                <div class="col-md-7">
+                  <input type="text" class="form-control" minlength="2" aria-describedby="cardHolder" placeholder="Send your name" name="cardHolder" id="cardHolder" v-model="cardHolderName" @change="checkHolder(cardHolderName)">
+                </div>
+              </div>
+              <div id="validName" class="row" v-if="isCardHolderNameValid">
+                <div class="col-md-12">
+                  <small>Valid Name!</small>
+                </div>
+              </div>
+              <div id="invalidName" class="row" v-if="isCardHolderNameInvalid">
+                <div class="col-md-12">
+                  <small>Invalid Name!</small>
                 </div>
               </div>
             </div>
@@ -65,12 +85,22 @@
                 <label for="cardExpiresDate">Expires Date</label>
                 <div class="row" id="cardExpiresDate">
                   <div class="col-md-6">
-                    <select class="custom-select">
-                      <option selected>Select a month</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
+                    <!--<select v-model="selectedMonth" class="custom-select">-->
+                      <!--<option v-for="month in months" v-bind:value="month.value">-->
+                        <!--{{ option.text }}-->
+                      <!--</option>-->
+                    <!--</select>-->
+                    <select v-model="selectedMonth" class="custom-select">
+                      <option v-for="month in months" v-bind:value="month.value">
+                        {{ month.text }}
+                      </option>
                     </select>
+                    <!--<select class="custom-select">-->
+                      <!--<option selected>Select a month</option>-->
+                      <!--<option value="1">One</option>-->
+                      <!--<option value="2">Two</option>-->
+                      <!--<option value="3">Three</option>-->
+                    <!--</select>-->
                   </div>
                   <div class="col-md-4">
                     <select class="custom-select">
@@ -120,80 +150,114 @@ export default {
       cardSimbol: {
         url: '',
         title: ''
-      }
+      },
+      validCardMessage: false,
+      invalidCardMessage: true,
+      cardHolderName: '',
+      isCardHolderNameValid: false,
+      isCardHolderNameInvalid: false,
+      selectedMonth: new Date().getMonth(),
+      months: [
+        { text: 'January', value: '1' },
+        { text: 'February', value: '2' },
+        { text: 'March', value: '3' },
+        { text: 'April', value: '4' },
+        { text: 'May', value: '5' },
+        { text: 'June', value: '6' },
+        { text: 'July', value: '7' },
+        { text: 'August', value: '8' },
+        { text: 'September', value: '9' },
+        { text: 'October', value: '10' },
+        { text: 'November', value: '11' },
+        { text: 'December', value: '12' }
+      ]
     }
   },
   computed: {
 
   },
+  directives: {
+    focus: {
+      inserted: function (el) {
+        el.focus()
+      }
+    }
+  },
   methods: {
+    isNumber: function(evt) {
+      evt = (evt) ? evt : window.event;
+      var charCode = (evt.which) ? evt.which : evt.keyCode;
+      if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+        evt.preventDefault();;
+      } else {
+        return true;
+      }
+    },
     checkCard:function() {
 
       let card = this.cardNumber1 + this.cardNumber2 + this.cardNumber3 + this.cardNumber4;
 
+      if((!this.checkFlag(card) && card.length > 12) || (card.length > 12 && !this.checkLuhn(card))) {
+
+        this.validCardMessage = false;
+        this.invalidCardMessage = false;
+      } else if (this.checkFlag(card) && card.length > 12 && this.checkLuhn(card)){
+        this.validCardMessage = true;
+        this.invalidCardMessage = true;
+      }
+
+
+    },
+    checkFlag:function (card) {
       let cardAmex = /^(?:3[47])$/;
       let cardVisa = /^(?:4[0-9])$/;
       let cardMaster = /^(?:5[1-5])$/;
 
-      //Find a good logo and remove invalid credit card alert (Add css validation)
-
       if (card.substring(0,2).match(cardAmex)) {
-        this.cardSimbol.url = 'https://fotw.info/images/u/us$amex.gif';
+        this.cardSimbol.url = 'src/assets/American-Express-logo-3.png';
         this.cardSimbol.title = 'America Express';
+        return true;
       } else if (card.substring(0,2).match(cardVisa)) {
-        this.cardSimbol.url = 'https://logodownload.org/wp-content/uploads/2016/10/visa-logo-21.png';
+        this.cardSimbol.url = 'src/assets/visa-logo-21.png';
         this.cardSimbol.title = 'Visa';
+        return true;
       } else if (card.substring(0,2).match(cardMaster)) {
-        this.cardSimbol.url = 'https://logodownload.org/wp-content/uploads/2014/07/mastercard-logo-7-1.png';
+        this.cardSimbol.url = 'src/assets/mastercard-logo-7-1.png';
         this.cardSimbol.title = 'MasterCard';
+        return true;
       } else {
-        alert("invalid card")
+        return false;
       }
-
-      this.checkLuhn(card)
-
-      if(!this.checkLuhn(card)) {
-        alert('Sorry, that is not a valid credit card number - please try again!');
-      }
-
     },
     checkLuhn:function (card) {
-      let sum = 0;
-      let numdigits = card.length;
-      let parity = numdigits % 2;
-      for(let i=0; i < numdigits; i++) {
-        var digit = parseInt(card.charAt(i))
-        if(i % 2 == parity) digit *= 2;
-        if(digit > 9) digit -= 9;
-        sum += digit;
+      var nCheck = 0, nDigit = 0, bEven = false;
+      card = card.replace(/\D/g, '');
+
+      for (var n = card.length - 1; n >= 0; n--) {
+        var cDigit = card.charAt(n);
+        nDigit = parseInt(cDigit, 10);
+
+        if (bEven) {
+          if ((nDigit *= 2) > 9) {
+            nDigit -= 9;
+          }
+        }
+
+        nCheck += nDigit;
+        bEven = !bEven;
       }
-      return (sum % 10) == 0;
+
+      return (nCheck % 10) === 0;
+    },
+    checkHolder:function (name) {
+      if (name.length > 2) {
+        this.isCardHolderNameValid = true;
+        this.isCardHolderNameInvalid = false;
+      } else {
+        this.isCardHolderNameValid = false;
+        this.isCardHolderNameInvalid = true;
+      }
     }
-
-
-    // checkCard:function(name) {
-    //   // var cardAmex = /^(?:3[47][0-9]{13})$/;
-    //   var cardAmex = /^(?:3[47])$/;
-    //   // var cardVisa = /^(?:4[0-9]{12}(?:[0-9]{3})?)$/;
-    //   var cardVisa = /^(?:4[0-9])$/;
-    //   // var cardMaster = /^(?:5[1-5][0-9]{14})$/;
-    //   var cardMaster = /^(?:5[1-5])$/;
-    //
-    //   // alert(name.length);
-    //
-    //   // if (name.length >= 3) {
-    //   //   alert('maior que 3');
-    //   if (name.substring(0,2).match(cardAmex)) {
-    //     alert("amex");
-    //   } else if (name.substring(0,2).match(cardVisa)) {
-    //     alert("visa");
-    //   } else if (name.substring(0,2).match(cardMaster)) {
-    //     alert("master");
-    //   } else {
-    //     alert("invalid card")
-    //   }
-    //   // }
-    // }
   }
 }
 </script>
@@ -201,6 +265,8 @@ export default {
 <style scoped lang="scss">
   $cardInfoLetter: black;
   $backgroundColor: #F6F6F6;
+  $warning: #ff0000;
+  $success: #28a745;
 
 #app {
   background-color: $backgroundColor;
@@ -213,6 +279,22 @@ export default {
 
 #cardInfo {
   color: $cardInfoLetter;
+}
+
+#invalidCard {
+  color: $warning;
+}
+
+#validCard {
+  color: $success;
+}
+
+#validName {
+  color: $success;
+}
+
+#invalidName {
+  color: $warning;
 }
 
 </style>
