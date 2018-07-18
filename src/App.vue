@@ -30,7 +30,7 @@
       </div>
       <div class="col-md-8">
         <div class="card w-100 h-100" id="cardInfo">
-          <form @submit="" class="card-body">
+          <form @submit="checkForm" class="card-body" action="https://vuejs.org/" method="post">
             <h3 class="card-title">Credit Card</h3>
             <div class="form-group">
               <label for="cardNumber">Card Number</label>
@@ -76,7 +76,7 @@
               </div>
               <div id="invalidName" class="row" v-if="isCardHolderNameInvalid">
                 <div class="col-md-12">
-                  <small>Invalid Name!</small>
+                  <small>Required Name!</small>
                 </div>
               </div>
             </div>
@@ -85,30 +85,23 @@
                 <label for="cardExpiresDate">Expires Date</label>
                 <div class="row" id="cardExpiresDate">
                   <div class="col-md-6">
-                    <!--<select v-model="selectedMonth" class="custom-select">-->
-                      <!--<option v-for="month in months" v-bind:value="month.value">-->
-                        <!--{{ option.text }}-->
-                      <!--</option>-->
-                    <!--</select>-->
-                    <select v-model="selectedMonth" class="custom-select">
+                    <select v-model="selectedMonth" class="custom-select" @change="checkExpirationDate()">
                       <option v-for="month in months" v-bind:value="month.value">
                         {{ month.text }}
                       </option>
                     </select>
-                    <!--<select class="custom-select">-->
-                      <!--<option selected>Select a month</option>-->
-                      <!--<option value="1">One</option>-->
-                      <!--<option value="2">Two</option>-->
-                      <!--<option value="3">Three</option>-->
-                    <!--</select>-->
                   </div>
                   <div class="col-md-4">
-                    <select class="custom-select">
-                      <option selected>Select a year</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
+                    <select v-model="selectedYear" class="custom-select" @change="checkExpirationDate()">
+                      <option v-for="year in years" v-bind:value="year">
+                        {{ year }}
+                      </option>
                     </select>
+                  </div>
+                </div>
+                <div id="expiredCard" class="row" v-if="isExpired">
+                  <div class="col-md-12">
+                  <small>Card Expired!</small>
                   </div>
                 </div>
               </div>
@@ -117,7 +110,12 @@
                   <label for="cardCVC">CVC</label>
                   <div class="row" id="cardCVC">
                     <div class="col-md-6">
-                      <input type="text" class="form-control text-center" maxlength="3"  placeholder="000">
+                      <input type="text" class="form-control text-center" maxlength="3"  placeholder="000" v-model="cvc" @keypress="isNumber()" @change="checkCVC(cvc)">
+                    </div>
+                  </div>
+                  <div class="row" id="invalidCVC" v-if="!isValidCVC">
+                    <div class="col-md-6">
+                      <small>Invalid CVC!</small>
                     </div>
                   </div>
                 </div>
@@ -128,7 +126,7 @@
                 <button type="button" class="btn btn-light">Pay With Order</button>
               </div>
               <div class="col-md-4">
-                <button type="submit" value="Submit" class="btn btn-success">Checkout</button>
+                <button type="submit" value="submit" class="btn btn-success">Checkout</button>
               </div>
             </div>
           </form>
@@ -143,6 +141,7 @@ export default {
   name: 'app',
   data () {
     return {
+      formErrors:[],
       cardNumber1: '',
       cardNumber2: '',
       cardNumber3: '',
@@ -158,23 +157,30 @@ export default {
       isCardHolderNameInvalid: false,
       selectedMonth: new Date().getMonth(),
       months: [
-        { text: 'January', value: '1' },
-        { text: 'February', value: '2' },
-        { text: 'March', value: '3' },
-        { text: 'April', value: '4' },
-        { text: 'May', value: '5' },
-        { text: 'June', value: '6' },
-        { text: 'July', value: '7' },
-        { text: 'August', value: '8' },
-        { text: 'September', value: '9' },
-        { text: 'October', value: '10' },
-        { text: 'November', value: '11' },
-        { text: 'December', value: '12' }
-      ]
+        { text: 'January', value: 1 },
+        { text: 'February', value: 2 },
+        { text: 'March', value: 3 },
+        { text: 'April', value: 4 },
+        { text: 'May', value: 5 },
+        { text: 'June', value: 6 },
+        { text: 'July', value: 7 },
+        { text: 'August', value: 8 },
+        { text: 'September', value: 9 },
+        { text: 'October', value: 10 },
+        { text: 'November', value: 11 },
+        { text: 'December', value: 12 }
+      ],
+      selectedYear: new Date().getFullYear(),
+      isExpired: false,
+      cvc: '',
+      isValidCVC: true
     }
   },
-  computed: {
-
+  computed : {
+    years () {
+      const year = new Date().getFullYear();
+      return Array.from({length: 20}, (value, index) => year + index)
+    }
   },
   directives: {
     focus: {
@@ -186,7 +192,7 @@ export default {
   methods: {
     isNumber: function(evt) {
       evt = (evt) ? evt : window.event;
-      var charCode = (evt.which) ? evt.which : evt.keyCode;
+      let charCode = (evt.which) ? evt.which : evt.keyCode;
       if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
         evt.preventDefault();;
       } else {
@@ -230,11 +236,11 @@ export default {
       }
     },
     checkLuhn:function (card) {
-      var nCheck = 0, nDigit = 0, bEven = false;
+      let nCheck = 0, nDigit = 0, bEven = false;
       card = card.replace(/\D/g, '');
 
-      for (var n = card.length - 1; n >= 0; n--) {
-        var cDigit = card.charAt(n);
+      for (let n = card.length - 1; n >= 0; n--) {
+        let cDigit = card.charAt(n);
         nDigit = parseInt(cDigit, 10);
 
         if (bEven) {
@@ -257,6 +263,39 @@ export default {
         this.isCardHolderNameValid = false;
         this.isCardHolderNameInvalid = true;
       }
+    },
+    checkExpirationDate: function () {
+      let expirationYear = this.selectedYear.toString();
+      let expirationMonth = this.selectedMonth.toString();
+      let currentYear = new Date().getFullYear().toString();
+      let currentMonth = new Date().getMonth().toString();
+      let sumExpiraiton = expirationYear + expirationMonth;
+      let sumCurrent = currentYear + currentMonth;
+
+      if (sumExpiraiton < sumCurrent) {
+        this.isExpired = true;
+      } else {
+        this.isExpired = false;
+      }
+    },
+    checkCVC: function (cvc) {
+      if (cvc.length === 3) {
+        this.isValidCVC = true;
+      } else {
+        this.isValidCVC = false;
+      }
+    },
+
+    //IF INVALID FIELD -> SHOW ERROR
+    checkForm:function(e) {
+      if(this.cardNumber1 && this.cardNumber2 && this.cardNumber3 && this.cardNumber4 && this.cardHolderName
+        && this.selectedMonth && this.selectedYear && this.cvc) return true;
+      this.formErrors = [];
+      if(!this.cardNumber1 || !this.cardNumber2 || !this.cardNumber3 || !this.cardNumber4) this.$toasted.show('Card number required.', {type: 'error', theme: 'primary', position: 'top-right', duration: 2000});
+      if(!this.cardHolderName) this.$toasted.show('Card holder required.', {type: 'error', theme: 'primary', position: 'top-right', duration: 2000});
+      if(!this.selectedMonth || !this.selectedMonth) this.$toasted.show('Card expiration required.', {type: 'error', theme: 'primary', position: 'top-right', duration: 2000});
+      if(!this.cvc) this.$toasted.show('CVC required.', {type: 'error', theme: 'primary', position: 'top-right', duration: 2000});
+      e.preventDefault();
     }
   }
 }
@@ -294,6 +333,14 @@ export default {
 }
 
 #invalidName {
+  color: $warning;
+}
+
+#expiredCard {
+  color: $warning;
+}
+
+#invalidCVC {
   color: $warning;
 }
 
