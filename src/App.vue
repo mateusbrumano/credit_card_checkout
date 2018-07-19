@@ -30,35 +30,35 @@
       </div>
       <div class="col-md-8">
         <div class="card w-100 h-100" id="cardInfo">
-          <form @submit="checkForm" class="card-body" action="https://vuejs.org/" method="post">
+          <form @submit="checkForm" class="card-body needs-validation" action="https://vuejs.org/" method="post">
             <h3 class="card-title">Credit Card</h3>
             <div class="form-group">
               <label for="cardNumber">Card Number</label>
               <div class="row" id="cardNumber">
                 <div class="col-md-1">
-                  <input type="text" maxlength="4" class="form-control text-center" placeholder="0000" name="cardNumber1" id="cardNumber1" v-focus v-model="cardNumber1" @change="checkCard()" @keypress="isNumber(cardNumber1)">
+                  <input type="text" maxlength="4" class="form-control text-center" v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"
+                  placeholder="0000" name="cardNumber1" id="cardNumber1" v-focus v-model="cardNumber1" @change="checkCard()" @keypress="isNumber(cardNumber1)">
+                  <div class="invalid-feedback">
+                    Invalid Card!
+                  </div>
                 </div>
                 <div class="col-md-1">
-                  <input type="text" maxlength="4" class="form-control text-center" placeholder="0000" name="cardNumber2" id="cardNumber2" v-model="cardNumber2" @change="checkCard()" @keypress="isNumber(cardNumber2)">
+                  <input type="text" maxlength="4" class="form-control text-center" v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"
+                         placeholder="0000" name="cardNumber2" id="cardNumber2" v-model="cardNumber2" @change="checkCard()" @keypress="isNumber(cardNumber2)">
                 </div>
                 <div class="col-md-1">
-                  <input type="text" maxlength="4" class="form-control text-center" placeholder="0000" name="cardNumber3" id="cardNumber3" v-model="cardNumber3" @change="checkCard()" @keypress="isNumber(cardNumber3)">
+                  <input type="text" maxlength="4" class="form-control text-center" v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"
+                         placeholder="0000" name="cardNumber3" id="cardNumber3" v-model="cardNumber3" @change="checkCard()" @keypress="isNumber(cardNumber3)">
                 </div>
                 <div class="col-md-1">
-                  <input type="text" maxlength="5" class="form-control text-center" placeholder="0000" name="cardNumber4" id="cardNumber4" v-model="cardNumber4" @change="checkCard()" @keypress="isNumber(cardNumber4)">
+                  <input type="text" maxlength="5" class="form-control text-center" v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"
+                         placeholder="0000" name="cardNumber4" id="cardNumber4" v-model="cardNumber4" @change="checkCard()" @keypress="isNumber(cardNumber4)">
                 </div>
                 <div class="col-md-1">
                   <img v-bind:src="cardSimbol.url" v-bind:alt="cardSimbol.title">
                 </div>
-              </div>
-              <div id="invalidCard" class="row" v-if="!invalidCardMessage">
-                <div class="col-md-12">
-                  <small>Sorry, that is not a valid credit card number - please try again!</small>
-                </div>
-              </div>
-              <div id="validCard" class="row" v-if="validCardMessage">
-                <div class="col-md-12">
-                  <small>Valid Credit Card!</small>
+                <div class="invalid-feedback">
+                Sorry, that is not a valid credit card number - please try again!
                 </div>
               </div>
             </div>
@@ -66,17 +66,11 @@
               <label for="cardHolder">Card Holder</label>
               <div class="row">
                 <div class="col-md-7">
-                  <input type="text" class="form-control" minlength="2" aria-describedby="cardHolder" placeholder="Send your name" name="cardHolder" id="cardHolder" v-model="cardHolderName" @change="checkHolder(cardHolderName)">
-                </div>
-              </div>
-              <div id="validName" class="row" v-if="isCardHolderNameValid">
-                <div class="col-md-12">
-                  <small>Valid Name!</small>
-                </div>
-              </div>
-              <div id="invalidName" class="row" v-if="isCardHolderNameInvalid">
-                <div class="col-md-12">
-                  <small>Required Name!</small>
+                  <input type="text" class="form-control"  v-bind:class="{'is-invalid': isCardHolderNameValid === false, 'is-valid': isCardHolderNameValid === true}" minlength="2" aria-describedby="cardHolder"
+                         placeholder="Send your name" name="cardHolder" id="cardHolder" v-model="cardHolderName" @change="checkHolder(cardHolderName)">
+                  <div class="invalid-feedback">
+                    Invalid Name!
+                  </div>
                 </div>
               </div>
             </div>
@@ -85,23 +79,21 @@
                 <label for="cardExpiresDate">Expires Date</label>
                 <div class="row" id="cardExpiresDate">
                   <div class="col-md-6">
-                    <select v-model="selectedMonth" class="custom-select" @change="checkExpirationDate()">
+                    <select v-model="selectedMonth" class="custom-select" v-bind:class="{'is-invalid': isExpired === true, 'is-valid': isExpired === false}" @change="checkExpirationDate()">
                       <option v-for="month in months" v-bind:value="month.value">
                         {{ month.text }}
                       </option>
                     </select>
+                    <div class="invalid-feedback">
+                      Card Expired!
+                    </div>
                   </div>
                   <div class="col-md-4">
-                    <select v-model="selectedYear" class="custom-select" @change="checkExpirationDate()">
+                    <select v-model="selectedYear" class="custom-select" v-bind:class="{'is-invalid': isExpired === true, 'is-valid': isExpired === false}" @change="checkExpirationDate()">
                       <option v-for="year in years" v-bind:value="year">
                         {{ year }}
                       </option>
                     </select>
-                  </div>
-                </div>
-                <div id="expiredCard" class="row" v-if="isExpired">
-                  <div class="col-md-12">
-                  <small>Card Expired!</small>
                   </div>
                 </div>
               </div>
@@ -110,12 +102,10 @@
                   <label for="cardCVC">CVC</label>
                   <div class="row" id="cardCVC">
                     <div class="col-md-6">
-                      <input type="text" class="form-control text-center" maxlength="3"  placeholder="000" v-model="cvc" @keypress="isNumber()" @change="checkCVC(cvc)">
-                    </div>
-                  </div>
-                  <div class="row" id="invalidCVC" v-if="!isValidCVC">
-                    <div class="col-md-6">
-                      <small>Invalid CVC!</small>
+                      <input type="text" class="form-control text-center" maxlength="3" v-bind:class="{'is-invalid': isCvcNumberValid === false, 'is-valid': isCvcNumberValid === true}" placeholder="000" v-model="cvcNumber" @keypress="isNumber()" @change="checkCVC()">
+                      <div class="invalid-feedback">
+                        Invalid CVC
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -150,11 +140,9 @@ export default {
         url: '',
         title: ''
       },
-      validCardMessage: false,
-      invalidCardMessage: true,
+      isCardNumberValid: null,
       cardHolderName: '',
-      isCardHolderNameValid: false,
-      isCardHolderNameInvalid: false,
+      isCardHolderNameValid: null,
       selectedMonth: new Date().getMonth(),
       months: [
         { text: 'January', value: 1 },
@@ -171,9 +159,10 @@ export default {
         { text: 'December', value: 12 }
       ],
       selectedYear: new Date().getFullYear(),
-      isExpired: false,
-      cvc: '',
-      isValidCVC: true
+      isExpired: null,
+      cvcNumber: '',
+      isCvcNumberValid: null
+      // cvcMessage: null
     }
   },
   computed : {
@@ -204,12 +193,9 @@ export default {
       let card = this.cardNumber1 + this.cardNumber2 + this.cardNumber3 + this.cardNumber4;
 
       if((!this.checkFlag(card) && card.length > 12) || (card.length > 12 && !this.checkLuhn(card))) {
-
-        this.validCardMessage = false;
-        this.invalidCardMessage = false;
+        this.isCardNumberValid = false;
       } else if (this.checkFlag(card) && card.length > 12 && this.checkLuhn(card)){
-        this.validCardMessage = true;
-        this.invalidCardMessage = true;
+        this.isCardNumberValid = true;
       }
 
 
@@ -258,10 +244,8 @@ export default {
     checkHolder:function (name) {
       if (name.length > 2) {
         this.isCardHolderNameValid = true;
-        this.isCardHolderNameInvalid = false;
       } else {
         this.isCardHolderNameValid = false;
-        this.isCardHolderNameInvalid = true;
       }
     },
     checkExpirationDate: function () {
@@ -269,8 +253,11 @@ export default {
       let expirationMonth = this.selectedMonth.toString();
       let currentYear = new Date().getFullYear().toString();
       let currentMonth = new Date().getMonth().toString();
+      if (expirationMonth.length < 2) expirationMonth = '0' + expirationMonth;
+      if (currentMonth.length < 2) currentMonth = '0' + currentMonth;
       let sumExpiraiton = expirationYear + expirationMonth;
       let sumCurrent = currentYear + currentMonth;
+
 
       if (sumExpiraiton < sumCurrent) {
         this.isExpired = true;
@@ -278,24 +265,45 @@ export default {
         this.isExpired = false;
       }
     },
-    checkCVC: function (cvc) {
+    checkCVC: function () {
+      let cvc = this.cvcNumber;
       if (cvc.length === 3) {
-        this.isValidCVC = true;
+        this.isCvcNumberValid = true;
       } else {
-        this.isValidCVC = false;
+        this.isCvcNumberValid = false;
       }
     },
 
-    //IF INVALID FIELD -> SHOW ERROR
     checkForm:function(e) {
-      if(this.cardNumber1 && this.cardNumber2 && this.cardNumber3 && this.cardNumber4 && this.cardHolderName
-        && this.selectedMonth && this.selectedYear && this.cvc) return true;
-      this.formErrors = [];
-      if(!this.cardNumber1 || !this.cardNumber2 || !this.cardNumber3 || !this.cardNumber4) this.$toasted.show('Card number required.', {type: 'error', theme: 'primary', position: 'top-right', duration: 2000});
-      if(!this.cardHolderName) this.$toasted.show('Card holder required.', {type: 'error', theme: 'primary', position: 'top-right', duration: 2000});
-      if(!this.selectedMonth || !this.selectedMonth) this.$toasted.show('Card expiration required.', {type: 'error', theme: 'primary', position: 'top-right', duration: 2000});
-      if(!this.cvc) this.$toasted.show('CVC required.', {type: 'error', theme: 'primary', position: 'top-right', duration: 2000});
-      e.preventDefault();
+
+      if(!this.cardNumber1 || !this.cardNumber2 || !this.cardNumber3 || !this.cardNumber4) {
+        this.$toasted.show('Card number required.', {type: 'error', theme: 'primary', position: 'top-right', duration: 2000});
+        e.preventDefault();
+      }
+      if(!this.cardHolderName) {
+        this.$toasted.show('Card holder required.', {type: 'error', theme: 'primary', position: 'top-right', duration: 2000});
+        e.preventDefault();
+      }
+      if(!this.selectedMonth || !this.selectedMonth) {
+        this.$toasted.show('Card expiration required.', {type: 'error', theme: 'primary', position: 'top-right', duration: 2000});
+        e.preventDefault();
+      }
+
+      if(!this.cvcNumber) {
+        this.$toasted.show('CVC required.', {type: 'error', theme: 'primary', position: 'top-right', duration: 2000});
+        e.preventDefault();
+      }
+
+      if (this.isCvcNumberValid === false || this.isExpired === true || this.isCardHolderNameValid === false || this.isCardNumberValid === false) {
+        this.$toasted.show('Invalid Fields', {type: 'error', theme: 'primary', position: 'top-right', duration: 2000});
+        e.preventDefault();
+      }
+
+      if (this.isCvcNumberValid && !this.isExpired && this.isCardHolderNameValid && this.isCardNumberValid) {
+        return true;
+      }
+
+
     }
   }
 }
@@ -313,35 +321,8 @@ export default {
 
 #productView {
   background-color: $backgroundColor;
-  border: 0px;
+  border: 0;
 }
 
-#cardInfo {
-  color: $cardInfoLetter;
-}
-
-#invalidCard {
-  color: $warning;
-}
-
-#validCard {
-  color: $success;
-}
-
-#validName {
-  color: $success;
-}
-
-#invalidName {
-  color: $warning;
-}
-
-#expiredCard {
-  color: $warning;
-}
-
-#invalidCVC {
-  color: $warning;
-}
 
 </style>
