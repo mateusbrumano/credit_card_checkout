@@ -1,16 +1,8 @@
 <template>
   <div id="app">
     <div class="row">
-      <div class="col-md-4">
-        <span></span>
-      </div>
-      <div class="col-md-8">
-        <a href="" id="productDetail"><icon name="angle-left"></icon><small>Product Details</small></a>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card w-50 h-50 text-center mx-auto" id="productView">
+      <div class="col-xs-12 col-lg-4">
+        <div class="card text-center" id="productView">
           <div class="card-body">
             <div class="row">
               <swiper :options="swiperOption">
@@ -35,55 +27,59 @@
                 <div class="swiper-button-next swiper-button-white" slot="button-next"></div>
               </swiper>
             </div>
-            <div class="text-left">
+            <div class="row text-left">
+              <div class="col-md-4 offset-md-4">
                 <small class="text-black-50">Total</small>
                 <h4>${{totalProducts()}}</h4>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-md-8">
+      <div class="col-xs-12 col-lg-8">
+        <a href="" id="productDetail"><icon name="angle-left"></icon><small>Product Details</small></a>
         <div class="card w-100 h-100" id="cardInfo">
           <form @submit="checkForm" class="card-body needs-validation" action="https://vuejs.org/" method="post">
             <h3 class="card-title">Credit Card</h3>
-            <div class="form-group">
-              <label for="cardNumber">Card Number</label>
-              <div class="row" id="cardNumber">
-                <div class="col-md-1">
-                  <input type="text" maxlength="4" class="form-control text-center"
-                         v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"
-                         placeholder="0000" name="cardNumber1" id="cardNumber1" v-focus v-model="cardNumber1"
-                         @change="checkCard()" @keypress="isNumber(cardNumber1)">
-                  <div class="invalid-feedback">
-                    Invalid Card!
-                  </div>
-                </div>
-                <div class="col-md-1">
-                  <input type="text" maxlength="4" class="form-control text-center"
-                         v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"
-                         placeholder="0000" name="cardNumber2" id="cardNumber2" v-model="cardNumber2"
-                         @change="checkCard()" @keypress="isNumber(cardNumber2)">
-                </div>
-                <div class="col-md-1">
-                  <input type="text" maxlength="4" class="form-control text-center"
-                         v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"
-                         placeholder="0000" name="cardNumber3" id="cardNumber3" v-model="cardNumber3"
-                         @change="checkCard()" @keypress="isNumber(cardNumber3)">
-                </div>
-                <div class="col-md-1">
-                  <input type="text" maxlength="5" class="form-control text-center"
-                         v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"
-                         placeholder="0000" name="cardNumber4" id="cardNumber4" v-model="cardNumber4"
-                         @change="checkCard()" @keypress="isNumber(cardNumber4)">
-                </div>
-                <div class="col-md-1">
-                  <img v-bind:src="cardSimbol.url" v-bind:alt="cardSimbol.title">
-                </div>
-                <div class="invalid-feedback">
-                  Sorry, that is not a valid credit card number - please try again!
-                </div>
-              </div>
-            </div>
+            <card-number-validator></card-number-validator>
+            <!--<div class="form-group">-->
+              <!--<label for="cardNumber">Card Number</label>-->
+              <!--<div class="row" id="cardNumber">-->
+                <!--<div class="col-md-1">-->
+                  <!--<input type="text" maxlength="4" class="form-control text-center"-->
+                         <!--v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"-->
+                         <!--placeholder="0000" name="cardNumber1" id="cardNumber1" v-focus v-model="cardNumber1"-->
+                         <!--@change="checkCard()" @keypress="isNumber(cardNumber1)">-->
+                  <!--<div class="invalid-feedback">-->
+                    <!--Invalid Card!-->
+                  <!--</div>-->
+                <!--</div>-->
+                <!--<div class="col-md-1">-->
+                  <!--<input type="text" maxlength="4" class="form-control text-center"-->
+                         <!--v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"-->
+                         <!--placeholder="0000" name="cardNumber2" id="cardNumber2" v-model="cardNumber2"-->
+                         <!--@change="checkCard()" @keypress="isNumber(cardNumber2)">-->
+                <!--</div>-->
+                <!--<div class="col-md-1">-->
+                  <!--<input type="text" maxlength="4" class="form-control text-center"-->
+                         <!--v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"-->
+                         <!--placeholder="0000" name="cardNumber3" id="cardNumber3" v-model="cardNumber3"-->
+                         <!--@change="checkCard()" @keypress="isNumber(cardNumber3)">-->
+                <!--</div>-->
+                <!--<div class="col-md-1">-->
+                  <!--<input type="text" maxlength="5" class="form-control text-center"-->
+                         <!--v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"-->
+                         <!--placeholder="0000" name="cardNumber4" id="cardNumber4" v-model="cardNumber4"-->
+                         <!--@change="checkCard()" @keypress="isNumber(cardNumber4)">-->
+                <!--</div>-->
+                <!--<div class="col-md-1">-->
+                  <!--<img v-bind:src="cardSimbol.url" v-bind:alt="cardSimbol.title">-->
+                <!--</div>-->
+                <!--<div class="invalid-feedback">-->
+                  <!--Sorry, that is not a valid credit card number - please try again!-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
             <div class="form-group">
               <label for="cardHolder">Card Holder</label>
               <div class="row">
@@ -158,8 +154,12 @@
 </template>
 
 <script>
+  import CardNumberValidator from "./components/shared/card-number-validator/CardNumberValidator";
   export default {
     name: 'app',
+    components: {
+      'card-number-validator': CardNumberValidator
+    },
     data() {
       return {
         cardNumber1: '',
@@ -219,13 +219,13 @@
         return Array.from({length: 20}, (value, index) => year + index)
       }
     },
-    directives: {
-      focus: {
-        inserted: function (el) {
-          el.focus()
-        }
-      }
-    },
+    // directives: {
+    //   focus: {
+    //     inserted: function (el) {
+    //       el.focus()
+    //     }
+    //   }
+    // },
     methods: {
       totalProducts(){
         let total = 0;
