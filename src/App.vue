@@ -5,25 +5,39 @@
         <span></span>
       </div>
       <div class="col-md-8">
-        <span>Product Details</span>
+        <a href="" id="productDetail"><icon name="angle-left"></icon><small>Product Details</small></a>
       </div>
     </div>
     <div class="row">
       <div class="col-md-4">
         <div class="card w-50 h-50 text-center mx-auto" id="productView">
-          <!--<img class="card-img-top" src="" alt="Card image cap">-->
-          <span>img</span>
           <div class="card-body">
-            <h5 class="card-title">Nome Produto</h5>
-            <small>Descrição</small>
-            <hr>
             <div class="row">
-              <div class="col-md-6">
-                <span>Detalhe</span>
-              </div>
-              <div class="col-md-6">
-                <span>Detalhe</span>
-              </div>
+              <swiper :options="swiperOption">
+                <swiper-slide v-for="slide in products" :key="slide.productId">
+                  <img v-bind:src="slide.productImg" height="300" width="300">
+                  <div class="card-body">
+                    <h5 class="card-title">{{slide.productName}}</h5>
+                    <small class="text-black-50">{{slide.productDescription}}</small>
+                    <hr>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <small class="text-black-50">Color {{slide.productColor}}</small>
+                      </div>
+                      <div class="col-md-6">
+                        <small class="text-black-50">Size {{slide.productSize}}</small>
+                      </div>
+                    </div>
+                  </div>
+                </swiper-slide>
+                <div class="swiper-pagination" slot="pagination"></div>
+                <div class="swiper-button-prev swiper-button-white" slot="button-prev"></div>
+                <div class="swiper-button-next swiper-button-white" slot="button-next"></div>
+              </swiper>
+            </div>
+            <div class="text-left">
+                <small class="text-black-50">Total</small>
+                <h4>${{totalProducts()}}</h4>
             </div>
           </div>
         </div>
@@ -177,7 +191,26 @@
         selectedYear: new Date().getFullYear(),
         isExpired: null,
         cvcNumber: '',
-        isCvcNumberValid: null
+        isCvcNumberValid: null,
+        swiperOption: {
+          slidesPerView: 1,
+          centeredSlides: true,
+          loop: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+            type: 'progressbar'
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev'
+          }
+        },
+        products: [
+          {productId: 1, productName: 'NIKE ESSENTIAL', productDescription: 'Multimaterial contrasted runners', productColor: 'BLACK', productSize: '43', productPrice: 199.99, productImg: 'src/assets/nike-black.png'},
+          {productId: 2, productName: 'CONVERSE', productDescription: 'Classic', productColor: 'WHITE', productSize: '37', productPrice: 50.00, productImg: 'src/assets/converse.png'},
+          {productId: 3, productName: 'NIKE WHITE', productDescription: 'Multimaterial contrasted runners', productColor: 'WHITE', productSize: '41', productPrice: 89.90, productImg: 'src/assets/nike-white.png'},
+          ]
       }
     },
     computed: {
@@ -194,6 +227,14 @@
       }
     },
     methods: {
+      totalProducts(){
+        let total = 0;
+
+        for (var i = 0; i < Object.keys(this.products).length; i++) {
+          total += this.products[i].productPrice;
+        }
+        return total;
+      },
       isNumber: function (evt) {
         evt = (evt) ? evt : window.event;
         let charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -333,9 +374,9 @@
 </script>
 
 <style scoped lang="scss">
-  $cardInfoLetter: black;
+  /*cardInfoLetter: black;*/
   $backgroundColor: #F6F6F6;
-  $warning: #ff0000;
+  /*warning: #ff0000;*/
   $success: #28a745;
 
   #app {
@@ -345,6 +386,14 @@
   #productView {
     background-color: $backgroundColor;
     border: 0;
+  }
+
+  #cardInfo {
+    border-radius: 15px 0 0 15px;
+  }
+
+  #productDetail {
+    color: $success;
   }
 
 
