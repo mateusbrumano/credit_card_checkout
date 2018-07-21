@@ -53,6 +53,7 @@
             title: ''
           },
           isCardNumberValid: null,
+          // isNumberEmpty: true
         }
       },
       methods: {
@@ -68,6 +69,8 @@
         checkCard: function () {
 
           let card = this.cardNumber1 + this.cardNumber2 + this.cardNumber3 + this.cardNumber4;
+
+          // alert("teste");
 
           if ((!this.checkFlag(card) && card.length > 12) || (card.length > 12 && !this.checkLuhn(card))) {
             this.isCardNumberValid = false;
@@ -117,6 +120,14 @@
           }
 
           return (nCheck % 10) === 0;
+        },
+        checkEmptyNumber: function () {
+          this.checkCard();
+          if (!this.cardNumber1 || !this.cardNumber2 || !this.cardNumber3 || !this.cardNumber4) {
+            this.isNumberEmpty = true;
+          } else {
+            this.isNumberEmpty = false;
+          }
         }
       },
       directives: {
