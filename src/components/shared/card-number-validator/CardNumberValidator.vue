@@ -6,7 +6,7 @@
         <input type="text" maxlength="4" class="form-control text-center"
                v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"
                placeholder="0000" name="cardNumber1" id="cardNumber1" v-focus v-model="cardNumber1"
-               @change="checkCard()" @keypress="isNumber(cardNumber1)">
+               @change="checkCard()" @keypress="isNumber(cardNumber1)" required>
         <div class="invalid-feedback">
           Invalid Card!
         </div>
@@ -15,19 +15,19 @@
         <input type="text" maxlength="4" class="form-control text-center"
                v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"
                placeholder="0000" name="cardNumber2" id="cardNumber2" v-model="cardNumber2"
-               @change="checkCard()" @keypress="isNumber(cardNumber2)">
+               @change="checkCard()" @keypress="isNumber(cardNumber2)" required>
       </div>
       <div class="col-md-1">
         <input type="text" maxlength="4" class="form-control text-center"
                v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"
                placeholder="0000" name="cardNumber3" id="cardNumber3" v-model="cardNumber3"
-               @change="checkCard()" @keypress="isNumber(cardNumber3)">
+               @change="checkCard()" @keypress="isNumber(cardNumber3)" required>
       </div>
       <div class="col-md-1">
         <input type="text" maxlength="5" class="form-control text-center"
                v-bind:class="{'is-invalid': isCardNumberValid === false, 'is-valid': isCardNumberValid === true}"
                placeholder="0000" name="cardNumber4" id="cardNumber4" v-model="cardNumber4"
-               @change="checkCard()" @keypress="isNumber(cardNumber4)">
+               @change="checkCard()" @keypress="isNumber(cardNumber4)" required>
       </div>
       <div class="col-md-1">
         <img v-bind:src="cardSimbol.url" v-bind:alt="cardSimbol.title">
@@ -52,8 +52,15 @@
             url: '',
             title: ''
           },
-          isCardNumberValid: null,
-          // isNumberEmpty: true
+          isCardNumberValid: null
+        }
+      },
+      props: {
+        isCardNumberToSubmit: {
+          type: String,
+          default () {
+            return ''
+          }
         }
       },
       methods: {
@@ -70,12 +77,12 @@
 
           let card = this.cardNumber1 + this.cardNumber2 + this.cardNumber3 + this.cardNumber4;
 
-          // alert("teste");
-
           if ((!this.checkFlag(card) && card.length > 12) || (card.length > 12 && !this.checkLuhn(card))) {
             this.isCardNumberValid = false;
+            this.$emit('interface', this.isCardNumberValid)
           } else if (this.checkFlag(card) && card.length > 12 && this.checkLuhn(card)) {
             this.isCardNumberValid = true;
+            this.$emit('interface', this.isCardNumberValid)
           }
 
 
@@ -108,27 +115,19 @@
           for (let n = card.length - 1; n >= 0; n--) {
             let cDigit = card.charAt(n);
             nDigit = parseInt(cDigit, 10);
-
             if (bEven) {
               if ((nDigit *= 2) > 9) {
                 nDigit -= 9;
               }
             }
-
             nCheck += nDigit;
             bEven = !bEven;
           }
-
           return (nCheck % 10) === 0;
-        },
-        checkEmptyNumber: function () {
-          this.checkCard();
-          if (!this.cardNumber1 || !this.cardNumber2 || !this.cardNumber3 || !this.cardNumber4) {
-            this.isNumberEmpty = true;
-          } else {
-            this.isNumberEmpty = false;
-          }
         }
+      },
+      beforeMount () {
+        this.isCardNumberValid = this.isCardNumberToSubmit;
       },
       directives: {
         focus: {
