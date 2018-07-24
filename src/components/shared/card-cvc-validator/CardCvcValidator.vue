@@ -4,10 +4,10 @@
       <label for="cardCVC">CVC</label>
       <div class="row" id="cardCVC">
         <div class="col-md-6">
-          <input type="text" class="form-control text-center" maxlength="3"
+          <input type="text" class="form-control text-center" maxlength="3" id="cvcNumber"
                  v-bind:class="{'is-invalid': isCvcNumberValid === false, 'is-valid': isCvcNumberValid === true}"
-                 placeholder="000" v-model="cvcNumber" @keypress="isNumber()" @change="checkCVC()" required>
-          <div class="invalid-feedback">
+                 placeholder="000" v-model="cvcNumber" @keypress="isNumber(cvcNumber)" @change="checkCVC(cvcNumber)" required>
+          <div class="invalid-feedback" id="invalidCVC">
             Invalid CVC
           </div>
         </div>
@@ -43,9 +43,11 @@
             return true;
           }
         },
-        checkCVC: function () {
-          let cvc = this.cvcNumber;
-          this.isCvcNumberValid = cvc.length === 3;
+        checkCVC: function (cvc) {
+          // let cvc = this.cvcNumber;
+          let regex = /^[0-9]{3}$/;
+
+          this.isCvcNumberValid = !!(cvc.length === 3 && cvc.match(regex));
           this.$emit('interface', this.isCvcNumberValid)
         }
       },
