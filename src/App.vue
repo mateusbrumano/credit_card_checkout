@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div>
     <div class="row">
       <div class="col-xs-12 col-lg-4">
         <product-view></product-view>
@@ -77,17 +77,7 @@
 </script>
 
 <style scoped lang="scss">
-  $backgroundColor: #F6F6F6;
   $success: #28a745;
-
-  #app {
-    background-color: $backgroundColor;
-  }
-
-  #productView {
-    background-color: $backgroundColor;
-    border: 0;
-  }
 
   #cardInfo {
     border-radius: 15px 0 0 15px;

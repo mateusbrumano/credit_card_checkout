@@ -74,7 +74,6 @@
           }
         },
         checkCard: function () {
-
           let card = this.cardNumber1 + this.cardNumber2 + this.cardNumber3 + this.cardNumber4;
 
           if ((!this.checkFlag(card) && card.length > 12) || (card.length > 12 && !this.checkLuhn(card))) {
@@ -84,8 +83,6 @@
             this.isCardNumberValid = true;
             this.$emit('interface', this.isCardNumberValid)
           }
-
-
         },
         checkFlag: function (card) {
           let cardAmex = /^(?:3[47])$/;

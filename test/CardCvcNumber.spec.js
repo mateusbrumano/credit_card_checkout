@@ -4,7 +4,7 @@ import CardCvcValidator from '../src/components/shared/card-cvc-validator/CardCv
 
 describe('CardCvcValidator', () => {
 
-  it('sets the correct default data', () => {
+  it('Sets the correct default data', () => {
     expect(typeof CardCvcValidator.data).toBe('function');
     const defaultData = CardCvcValidator.data();
     expect(defaultData.cvcNumber).toBe('');
@@ -25,10 +25,17 @@ describe('CardCvcValidator', () => {
     expect(vm.$data.isCvcNumberValid).toBeFalsy();
   });
 
-  it('Input invalid CVC number (MOre than 3 number)', () => {
+  it('Input invalid CVC number (More than 3 number)', () => {
     const Constructor = Vue.extend(CardCvcValidator);
     const vm = new Constructor().$mount();
     vm.checkCVC('1234');
+    expect(vm.$data.isCvcNumberValid).toBeFalsy();
+  });
+
+  it('Input invalid CVC number (Less than 3 number)', () => {
+    const Constructor = Vue.extend(CardCvcValidator);
+    const vm = new Constructor().$mount();
+    vm.checkCVC('12');
     expect(vm.$data.isCvcNumberValid).toBeFalsy();
   });
 

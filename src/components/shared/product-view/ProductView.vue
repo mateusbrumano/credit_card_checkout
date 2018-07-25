@@ -74,5 +74,12 @@
 </script>
 
 <style scoped lang="scss">
+  $backgroundColor: #F6F6F6;
+
+  #productView {
+    background-color: $backgroundColor;
+    border: 0;
+  }
+
 
 </style>
