@@ -1,11 +1,11 @@
-import CardDateExpirationValidator from '../src/components/shared/card-date-expiration-validator/CardDateExpirationValidator.vue'
+import CardDateExpiration from '../src/components/card-inputs/CardDateExpiration.vue'
 
 
-describe('CardDateExpirationValidator', () => {
+describe('CardDateExpiration', () => {
 
   it('teste', () => {
-    expect(typeof CardDateExpirationValidator.data).toBe('function');
-    const defaultData = CardDateExpirationValidator.data();
+    expect(typeof CardDateExpiration.data).toBe('function');
+    const defaultData = CardDateExpiration.data();
     expect(defaultData.selectedMonth).toBe(new Date().getMonth());
     expect(defaultData.months[0].text).toBe('January');
     expect(defaultData.months[0].value).toBe(1);

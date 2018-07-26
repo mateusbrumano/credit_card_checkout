@@ -18,7 +18,7 @@
 
 <script>
     export default {
-      name: "CardHolderValidator",
+      name: "CardHolder",
       data() {
         return {
           cardHolderName: '',

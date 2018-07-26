@@ -18,7 +18,7 @@
 
 <script>
     export default {
-      name: "CardCvcValidator",
+      name: "CardCvc",
       data() {
         return {
           cvcNumber: '',

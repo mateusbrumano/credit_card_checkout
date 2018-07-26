@@ -29,7 +29,7 @@
 
 <script>
     export default {
-      name: "CardDateExpirationValidator",
+      name: "CardDateExpiration",
       data() {
         return {
           selectedMonth: new Date().getMonth(),
